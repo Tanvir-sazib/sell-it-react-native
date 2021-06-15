@@ -7,12 +7,20 @@ import AppText from './AppText';
 import Screen from './Screen';
 import PickerItem from './PickerItem';
 
-const AppPicker = ({ icon, items, placeholder, selectedItem, onSelectedItem }) => {
+const AppPicker = ({ icon,
+    width = '100%',
+    items,
+    numberOfColum,
+    placeholder,
+    PickerItemComponent = PickerItem,
+    selectedItem,
+    onSelectedItem, }) => {
     const [modalVisible, seTmodalVisible] = useState(false)
     return (
         <>
             <TouchableWithoutFeedback onPress={() => seTmodalVisible(true)}>
-                <View style={styles.container}>
+                <View style={[styles.container, width = { width }]}>
+
                     {icon &&
                         <MaterialCommunityIcons
                             name={icon}
@@ -20,12 +28,16 @@ const AppPicker = ({ icon, items, placeholder, selectedItem, onSelectedItem }) =
                             color={colors.medium}
                             style={styles.icon} />}
                     <AppText style={styles.text}>{selectedItem ? selectedItem.label : placeholder}</AppText>
+
+
                     <MaterialCommunityIcons
                         name='chevron-down'
                         size={20}
                         color={colors.medium}
                     />
+
                 </View>
+
             </TouchableWithoutFeedback>
             <Modal visible={modalVisible} animationType='slide'>
                 <Screen>
@@ -33,8 +45,10 @@ const AppPicker = ({ icon, items, placeholder, selectedItem, onSelectedItem }) =
                     <FlatList
                         data={items}
                         keyExtractor={item => item.value.toString()}
+                        numColumns={numberOfColum}
                         renderItem={({ item }) => (
-                            <PickerItem
+                            <PickerItemComponent
+                                item={item}
                                 label={item.label}
                                 onPress={() => {
                                     seTmodalVisible(false);
@@ -54,9 +68,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: colors.light,
         borderRadius: 25,
-        width: '100%',
         padding: 15,
-        marginVertical: 15
+        marginVertical: 15,
 
     },
     text: {
